@@ -21,7 +21,7 @@
                     <nav>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item">
-                                <a href="{{ route('app.index') }}">
+                                <a href="{{ route('home') }}">
                                     <i class="fas fa-home"></i>
                                 </a>
                             </li>
