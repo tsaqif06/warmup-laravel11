@@ -6,8 +6,12 @@
         nav svg {
             height: 20px;
         }
+
+        .product-box .product-details h5 {
+            width: 100%;
+        }
     </style>
-    @endpush
+@endpush
 
 @section('content')
     <section class="breadcrumb-section section-b-space" style="padding-top:20px;padding-bottom:20px;">
@@ -457,14 +461,14 @@
                                 <div class="product-box">
                                     <div class="img-wrapper">
                                         <div class="front">
-                                            <a href="product/{{ $product->slug }}">
-                                                <img src="assets/images/fashion/product/front/{{ $product->image }}"
+                                            <a href="{{ route('shop.product.details', ['slug' => $product->slug]) }}">
+                                                <img src="{{ asset('assets/images/fashion/product/front') }}/{{ $product->image }}"
                                                     class="bg-img blur-up lazyload" alt="">
                                             </a>
                                         </div>
                                         <div class="back">
-                                            <a href="product/{{ $product->slug }}">
-                                                <img src="assets/images/fashion/product/back/{{ $product->image }}"
+                                            <a href="{{ route('shop.product.details', ['slug' => $product->slug]) }}">
+                                                <img src="{{ asset('assets/images/fashion/product/back') }}/{{ $product->image }}"
                                                     class="bg-img blur-up lazyload" alt="">
                                             </a>
                                         </div>
@@ -510,14 +514,21 @@
                                             </ul>
                                         </div>
                                         <div class="main-price">
-                                            <a href="product/{{ $product->slug }}" class="font-default">
+                                            <a href="{{ route('shop.product.details', ['slug' => $product->slug]) }}"
+                                                class="font-default">
                                                 <h5 class="ms-0">{{ $product->name }}</h5>
                                             </a>
                                             <div class="listing-content">
                                                 <span class="font-light">{{ $product->category->name }}</span>
                                                 <p class="font-light">{{ $product->short_description }}</p>
                                             </div>
-                                            <h3 class="theme-color">{{ $product->regular_price }}</h3>
+                                            <h3 class="theme-color">
+                                                @if ($product->sale_price)
+                                                    ${{ $product->sale_price }}
+                                                @else
+                                                    ${{ $product->regular_price }}
+                                                @endif
+                                            </h3>
                                             <button class="btn listing-content">Add To Cart</button>
                                         </div>
                                     </div>
@@ -526,7 +537,7 @@
                         @endforeach
 
                     </div>
-                    {{ $products->links("pagination.default") }}
+                    {{ $products->links('pagination.default') }}
                 </div>
             </div>
         </div>
