@@ -384,7 +384,9 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="javascript:void(0)" class="wishlist">
+                                                    <a href="javascript:void(0)"
+                                                        onclick="addProductToWishlist({{ $product->id }}, '{{ $product->name }}', 1, {{ $product->regular_price }})"
+                                                        class="wishlist">
                                                         <i data-feather="heart"></i>
                                                     </a>
                                                 </li>
@@ -479,30 +481,28 @@
 
 @push('scripts')
     <script>
-        $(function() {
-            $("#pagesize").on("change", function() {
-                $("#size").val($("#pagesize option:selected").val());
+        $("#pagesize").on("change", function() {
+            $("#size").val($("#pagesize option:selected").val());
+            $("#frmFilter").submit();
+        });
+
+        $("#orderby").on("change", function() {
+            $("#order").val($("#orderby option:selected").val());
+            $("#frmFilter").submit();
+        });
+
+        var $range = $(".js-range-slider");
+        instance = $range.data("ionRangeSlider");
+        instance.update({
+            from: {{ $from }},
+            to: {{ $to }}
+        });
+
+        $("#prange").on("change", function() {
+            setTimeout(() => {
                 $("#frmFilter").submit();
-            });
-
-            $("#orderby").on("change", function() {
-                $("#order").val($("#orderby option:selected").val());
-                $("#frmFilter").submit();
-            });
-
-            var $range = $(".js-range-slider");
-            instance = $range.data("ionRangeSlider");
-            instance.update({
-                from: {{ $from }},
-                to: {{ $to }}
-            });
-
-            $("#prange").on("change", function() {
-                setTimeout(() => {
-                    $("#frmFilter").submit();
-                }, 1000);
-            });
-        })
+            }, 1000);
+        });
 
         function filterProductsByBrand(brand) {
             var brands = "";
@@ -528,6 +528,42 @@
             });
             $("#categories").val(categories);
             $("#frmFilter").submit();
+        }
+
+        function addProductToWishlist(id, name, quantity, price) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('wishlist.store') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id: id,
+                    name: name,
+                    quantity: quantity,
+                    price: price,
+                },
+                success: function(data) {
+                    if (data.status == 200) {
+                        getCartAndWishlistCount()
+                        $.notify("Item successfully added to your wishlist!!", {
+                            color: "#fff",
+                            background: "#D44950"
+                        });
+                    }
+                }
+            })
+        }
+
+        function getCartAndWishlistCount() {
+            $.ajax({
+                type: "GET",
+                url: "{{ route('shop.cart.wishlist.count') }}",
+                success: function(data) {
+                    if (data.status == 200) {
+                        $("#cart-count").html(data.cartCount);
+                        $("#wishlist-count").html(data.wishlistCount);
+                    }
+                }
+            })
         }
     </script>
 @endpush

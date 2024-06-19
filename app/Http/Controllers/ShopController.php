@@ -6,6 +6,7 @@ use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Gloudemans\Shoppingcart\Facades\Cart;
 
 class ShopController extends Controller
 {
@@ -72,6 +73,17 @@ class ShopController extends Controller
         return view('details', [
             'product' => $product,
             'rproducts' => $rproducts,
+        ]);
+    }
+
+    public function getCartAndWishlistCount()
+    {
+        $cartCount = Cart::instance("cart")->content()->count();
+        $wishlistCount = Cart::instance("wishlist")->content()->count();
+        return response()->json([
+            'status' => 200,
+            'cartCount' => $cartCount,
+            'wishlistCount' => $wishlistCount,
         ]);
     }
 }
