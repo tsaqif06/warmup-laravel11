@@ -89,7 +89,8 @@
                                             <div class="qty-box">
                                                 <div class="input-group">
                                                     <input type="number" name="quantity" data-rowid="{{ $item->rowId }}"
-                                                        class="form-control input-number" value="{{ $item->qty }}">
+                                                        onchange="updateQuantity(this)" class="form-control input-number"
+                                                        value="{{ $item->qty }}">
                                                 </div>
                                             </div>
                                         </td>
@@ -182,4 +183,21 @@
             @endif
         </div>
     </section>
+
+    <form id="updateCartQty" action="{{ route('cart.update') }}" method="POST">
+        @csrf
+        @method('put')
+        <input type="hidden" id="rowId" name="rowId" />
+        <input type="hidden" id="quantity" name="quantity" />
+    </form>
 @endsection
+
+@push('scripts')
+    <script>
+        function updateQuantity(qty) {
+            $('#rowId').val($(qty).data('rowid'));
+            $('#quantity').val($(qty).val());
+            $('#updateCartQty').submit();
+        }
+    </script>
+@endpush
